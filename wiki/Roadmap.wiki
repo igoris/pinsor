@@ -1,0 +1,20 @@
+#Product Roadmap.
+
+= Jan 23rd = 
+
+ * Initial commit
+ * able to resolve specified types
+ * able to be configured in code
+ * constructor injection
+
+= Feb 6th = 
+
+ * basic AoP support
+ * attempt auto-wiring
+
+= Long term = 
+
+ * support for extending container with facilities 
+ * canned facilities for SQL Alchemy, Logging
+ * web framework integration 
+ * python 3 support
