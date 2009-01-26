@@ -1,9 +1,5 @@
 import functools
 
-def compare_cls(clsa, clsb):
-	acount = get_arg_count(clsa.__init__)
-	bcount = get_arg_count(clsb.__init__)
-	return cmp(acount,bcount)
 
 class Inspector(object):
 	def get_arg_count(self,func):
@@ -11,12 +7,12 @@ class Inspector(object):
 		argcount = code.co_argcount
 		return argcount
 		
-	def bldcls(self,cls, dep):
+	def build_class(self,cls, dep):
 		if len(dep) == 0:
 			return cls()
 		return cls(*dep)
 
-class Resolver(object):
+class DefaultResolver(object):
 	
 	def __init__(self, inspect = Inspector()):
 		self.__inspect = inspect
@@ -28,14 +24,14 @@ class Resolver(object):
 				if d > 0:
 					for dep in d:
 						deps.append(self.walk(graph, dep))
-				obj = self.__inspect.bldcls(cls, deps)
+				obj = self.__inspect.build_class(cls, deps)
 				return obj
 	
 		
 	
 class PinsorContainer(object):
 	
-	def __init__(self, resolver = Resolver()):
+	def __init__(self, resolver = DefaultResolver()):
 		self.__objectgraph = {}
 		self.__instances = []
 		self.__resolver = resolver
@@ -48,6 +44,6 @@ class PinsorContainer(object):
 		return obj
 
 	@property
-	def ObjectGraph(self):
+	def ObjectGraph(self):	
 		return self.__objectgraph
 		
