@@ -24,3 +24,37 @@ class test_container(unittest.TestCase):
 		fakeobj = self.pinsor.Resolve(FakeObjWithArgs)
 		assert isinstance(fakeobj, FakeObjWithArgs)
 		assert fakeobj.DoesStuff()
+
+
+class test_inspector_when_getting_arg_count(unittest.TestCase):
+
+
+	def setUp(self):
+		self.inspect = Inspector()
+
+	def test_should_get_arg_coun(self):
+		def func(a, b,c,d):
+			pass
+		count = self.inspect.get_arg_count(func)
+		assert 4 == count
+
+	def test_should_return_0_when_no_args_found_on_method(self):
+		def func():
+			pass
+		count = self.inspect.get_arg_count(func)
+		assert 0 == count
+
+
+class test_inspector_when_building_class(unittest.TestCase):
+
+	def setUp(self):
+		self.inspect = Inspector()
+
+	def test_should_build_class_with_no_dependencies(self):
+		fakeobj = self.inspect.build_class(FakeObj, [])
+		assert isinstance(fakeobj, FakeObj)
+
+	def test_should_build_class_with_dependencies_passed_to_init(self):
+		fakeobj = FakeObj()
+		needsfake = self.inspect.build_class(NeedsFakeObj, [fakeobj])
+		assert isinstance(needsfake, NeedsFakeObj)
