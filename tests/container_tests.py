@@ -24,27 +24,20 @@ class test_container(unittest.TestCase):
 		fakeobj = self.pinsor.Resolve(FakeObjWithArgs)
 		assert isinstance(fakeobj, FakeObjWithArgs)
 		assert fakeobj.DoesStuff()
-
-
-class test_inspector_when_getting_arg_count(unittest.TestCase):
-
-
-	def setUp(self):
-		self.inspect = Inspector()
-
-	def test_should_get_arg_coun(self):
-		def func(a, b,c,d):
-			pass
-		count = self.inspect.get_arg_count(func)
-		assert 4 == count
-
-	def test_should_return_0_when_no_args_found_on_method(self):
-		def func():
-			pass
-		count = self.inspect.get_arg_count(func)
-		assert 0 == count
-
-
+	
+	def test_should_return_same_instance_each_time_resolve_is_called_by_default(self):
+		fakeobj1 = self.pinsor.Resolve(FakeObj)
+		fakeobj2 = self.pinsor.Resolve(FakeObj)
+		self.assertEqual(id(fakeobj1), id(fakeobj2))
+	
+	def test_should_return_new_instance_each_time_resolve_is_called_when_lifestyle_of_that_component_is_set_to_transient(self):
+		pinsor = PinsorContainer()
+		pinsor.AddComponent(FakeObj, depends=[], lifestyle = LifeStyle.Transient)
+		fakeobj1 = pinsor.Resolve(FakeObj)
+		fakeobj2 = pinsor.Resolve(FakeObj)
+		self.assertNotEqual(id(fakeobj1), id(fakeobj2))
+		
+		
 class test_inspector_when_building_class(unittest.TestCase):
 
 	def setUp(self):

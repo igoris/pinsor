@@ -1,11 +1,7 @@
-import functools
+from enums import *
 
 
 class Inspector(object):
-	def get_arg_count(self,func):
-		code = func.func_code
-		argcount = code.co_argcount
-		return argcount
 		
 	def build_class(self,cls, dep):
 		if len(dep) == 0:
@@ -17,14 +13,18 @@ class DefaultResolver(object):
 	def __init__(self, inspect = Inspector()):
 		self.__inspect = inspect
 		
-	def walk(self,graph,cls):
+	def walk(self,graph,cls,instances):
+		if cls in instances:
+			return instances[cls] 
 		for o, d in graph.iteritems():
 			if o == cls:
 				deps = []
-				if d > 0:
-					for dep in d:
-						deps.append(self.walk(graph, dep))
+				if d[0] > 0:
+					for dep in d[0]:
+						deps.append(self.walk(graph, dep,instances))
 				obj = self.__inspect.build_class(cls, deps)
+				if d[1] == "singleton":
+					instances[cls] = obj
 				return obj
 	
 		
@@ -33,14 +33,14 @@ class PinsorContainer(object):
 	
 	def __init__(self, resolver = DefaultResolver()):
 		self.__objectgraph = {}
-		self.__instances = []
+		self.__instances = {}
 		self.__resolver = resolver
 		
-	def AddComponent(self,type, depends = []):
-		self.__objectgraph[type] = depends
+	def AddComponent(self,type, depends = [], lifestyle = LifeStyle.Singleton()):
+		self.__objectgraph[type] = [depends, lifestyle]
 			
 	def Resolve(self,type):
-		obj = self.__resolver.walk(self.__objectgraph, type)
+		obj = self.__resolver.walk(self.__objectgraph, type, self.__instances)
 		return obj
 
 	@property
