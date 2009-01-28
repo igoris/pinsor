@@ -2,6 +2,7 @@ from utility import *
 from pinsor.ioc import *
 import unittest
 
+
 class test_container(unittest.TestCase):
 
 	def setUp(self):
@@ -35,8 +36,15 @@ class test_container(unittest.TestCase):
 		pinsor.AddComponent(FakeObj, depends=[], lifestyle = LifeStyle.Transient)
 		fakeobj1 = pinsor.Resolve(FakeObj)
 		fakeobj2 = pinsor.Resolve(FakeObj)
+		assert isinstance(fakeobj1, FakeObj)
+		assert isinstance(fakeobj2, FakeObj)
 		self.assertNotEqual(id(fakeobj1), id(fakeobj2))
 		
+	def test_should_be_able_to_resolve_by_component_key(self):
+		pinsor = PinsorContainer()
+		pinsor.AddComponent(FakeObj, key="comp.fakeobj")
+		fakeobj = pinsor.Resolve(key="comp.fakeobj")
+		assert isinstance(fakeobj, FakeObj)
 		
 class test_inspector_when_building_class(unittest.TestCase):
 
@@ -51,3 +59,23 @@ class test_inspector_when_building_class(unittest.TestCase):
 		fakeobj = FakeObj()
 		needsfake = self.inspect.build_class(NeedsFakeObj, [fakeobj])
 		assert isinstance(needsfake, NeedsFakeObj)
+
+class test_inspector_when_retrieving_class_tuple_from_graph(unittest.TestCase):
+
+	def setUp(self):
+		self.inspect = Inspector()
+		self.graph = {}
+		self.graph["comp.FakeObj"] = Component(FakeObj, [], LifeStyle.Transient)
+		
+	def test_should_retrieve_tuple_class_already_in_object_graph_by_type(self):
+		cls = self.inspect.get_class_tuple_from_graph(self.graph, FakeObj, None)
+		assert cls[0] == "comp.FakeObj"
+		comp = cls[1]
+		assert comp.ClassType == FakeObj
+		
+	def test_when_more_than_one_of_same_type_in_graph_should_retrieve_tuple_class_already_in_object_graph_by_key(self):
+		self.graph["comp.FakeObj2"] = Component(FakeObj, [], LifeStyle.Transient)
+		cls = self.inspect.get_class_tuple_from_graph(self.graph, FakeObj, "comp.FakeObj2")
+		assert cls[0] == "comp.FakeObj2"
+		comp = cls[1]
+		assert comp.ClassType == FakeObj
