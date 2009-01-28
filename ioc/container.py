@@ -1,31 +1,70 @@
 from enums import *
 
 
+class Component(object):
+	
+	def __init__(self, classtype, depends, lifestyle):
+		self.__classtype = classtype
+		self.__depends = depends
+		self.__lifestyle = lifestyle
+		
+	@property
+	def LifeStyle(self):
+		return self.__lifestyle
+		
+	@property
+	def ClassType(self):
+		return self.__classtype
+		
+	@property
+	def Depends(self):
+		return self.__depends
+		
+
 class Inspector(object):
 		
 	def build_class(self,cls, dep):
 		if len(dep) == 0:
 			return cls()
 		return cls(*dep)
-
+	
+	def get_class_tuple_from_graph(self,graph, clstype,key):
+		objs  = []
+		for k,v in graph.iteritems():
+			if v.ClassType == clstype:
+				objs.append((k, v))
+		if len(objs) > 1:
+			for clstuple in objs:
+				if clstuple[0] == key:
+					return clstuple
+			raise Exception ("was able to find matching types but the key does not match for key " + str(key) + " and type " + str(clstype))
+		if len(objs) == 1:
+			return objs[0]
+		raise Exception(" class type not found in object graph..this is um bad " + str(clstype) + " " + str(key))
+		
+	 
 class DefaultResolver(object):
 	
 	def __init__(self, inspect = Inspector()):
 		self.__inspect = inspect
 		
-	def walk(self,graph,cls,instances):
+	def walk(self,graph,key,cls,instances):
+		if cls is None:
+			comp = graph[key]
+			cls = comp.ClassType
 		if cls in instances:
-			return instances[cls] 
-		for o, d in graph.iteritems():
-			if o == cls:
-				deps = []
-				if d[0] > 0:
-					for dep in d[0]:
-						deps.append(self.walk(graph, dep,instances))
-				obj = self.__inspect.build_class(cls, deps)
-				if d[1] == "singleton":
-					instances[cls] = obj
-				return obj
+			return instances[cls]
+		clstuple =self.__inspect.get_class_tuple_from_graph(graph, cls, key)
+		deps = []
+		component = clstuple[1]
+		for dep in component.Depends:
+			deptuple = self.__inspect.get_class_tuple_from_graph(graph, dep, None)
+			depcomp =  deptuple[1]
+			deps.append(self.walk(graph, deptuple[0], depcomp.ClassType, instances))
+		obj = self.__inspect.build_class(component.ClassType, deps)
+		if component.LifeStyle == "singleton":
+			instances[cls] = obj
+		return obj
 	
 		
 	
@@ -36,11 +75,15 @@ class PinsorContainer(object):
 		self.__instances = {}
 		self.__resolver = resolver
 		
-	def AddComponent(self,type, depends = [], lifestyle = LifeStyle.Singleton()):
-		self.__objectgraph[type] = [depends, lifestyle]
+	def AddComponent(self,clstype, depends = [], lifestyle = LifeStyle.Singleton(), key= None):
+		if key is None:
+			key = clstype.__name__
+		if key in self.__objectgraph:
+			raise KeyError
+		self.__objectgraph[key] = Component(clstype, depends, lifestyle)
 			
-	def Resolve(self,type):
-		obj = self.__resolver.walk(self.__objectgraph, type, self.__instances)
+	def Resolve(self,clstype=None,key=None):
+		obj = self.__resolver.walk(self.__objectgraph, key, clstype, self.__instances)
 		return obj
 
 	@property
