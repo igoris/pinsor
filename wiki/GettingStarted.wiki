@@ -73,18 +73,18 @@ But lets say your boss wants you to make make half of your classes use a new !Cr
 
 Now you have to make a new factory class and copy and paste the references all over your code base (potentially having to update your unit tests depending on if you were certain !CsvFormat would always be there). You're careful so it takes you 20 minutes or so and tests to validate the change.
 
-Well if you had Pinsor from the start you'd only have to change one python module that instantiates the container (and that your running code is called ServerApplication):
+Well if you had Pinsor from the start you'd only have to change one python module that instantiates the container (and that your running code is called !ServerApplication):
 
 <code language="python">
 container = !PinsorContainer()
-container.AddComponent(CsvFormat)
-container.AddComponent(CrystalReportsFormat)
-container.AddComponent(FileWriter,key='write.csv',depends=[CsvFormat])
-container.AddComponent(FileWriter,key='write.crystal',depends=[CrystalReportsFormat])
-container.AddComponent(MonthlyReports, Depends[(FileWriter,'write.csv')])
-container.AddComponent(QueryResults, Depends=[(FileWriter,'write.crystal')])
-container.AddComponent(ServerApplication, Depends=[MonthlyReports,QueryResults])
+container.AddComponent(!CsvFormat)
+container.AddComponent(!CrystalReportsFormat)
+container.AddComponent(!FileWriter,key='write.csv',depends=[CsvFormat])
+container.AddComponent(!FileWriter,key='write.crystal',depends=[CrystalReportsFormat])
+container.AddComponent(!MonthlyReports, Depends[(FileWriter,'write.csv')])
+container.AddComponent(!QueryResults, Depends=[(FileWriter,'write.crystal')])
+container.AddComponent(!ServerApplication, Depends=[MonthlyReports,!QueryResults])
 
-app = container.Resolve(ServerApplication)
+app = container.Resolve(!ServerApplication)
 app.start()
 </code>
