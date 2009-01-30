@@ -99,7 +99,7 @@ container.!AddComponent(!CrystalReportsFormat)
 container.!AddComponent(!FileWriter,key='write.csv',depends=[ !CsvFormat])
 container.!AddComponent(!FileWriter,key='write.crystal',depends=[ !CrystalReportsFormat])
 container.!AddComponent(!MonthlyReports, depends=[Config('write.csv')])
-container.!AddComponent(!QueryResults, depends=[(Config('write.crystal')])
+container.!AddComponent(!QueryResults, depends=[Config('write.crystal')])
 container.!AddComponent(!ServerApplication, depends=[ !MonthlyReports,!QueryResults])
 
 app = container.Resolve(!ServerApplication)
