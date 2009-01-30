@@ -110,4 +110,4 @@ app.start()
 
 </code>
 
-So what's going on here?  I configure every class I want to use in the application, and their dependencies. Dependency order is import as it's how Pinsor knows which argument to pass into your constructor.  For !MonthlyReports and !QueryResults the Dependency takes a Config class and whose argument is a key referenced from earlier, each key is pointing to a different configured instance of !FileWriter.  !MonthyReports will use csv formatting and QueryResults will generate a crystal report.
+So what's going on here?  I configure every class I want to use in the application, and their dependencies. Dependency order is import as it's how Pinsor knows which argument to pass into your constructor.  For !MonthlyReports and !QueryResults the Dependency takes a Config class and whose argument is a key referenced from earlier, each key is pointing to a different configured instance of !FileWriter.  !MonthyReports will use csv formatting and !QueryResults will generate a crystal report.
