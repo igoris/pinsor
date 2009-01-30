@@ -1,6 +1,6 @@
 #Learn how to get going with Pinsor
 
-= !PinsorContainer class simple example= 
+= Configuration for multiple classes with different behavior= 
 
 Lets say you have classes like so:
 
