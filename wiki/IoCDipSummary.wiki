@@ -1,5 +1,5 @@
 #labels Featured
-This is a summary of how I see Dependency Injection and Inversion Of Control at this point in my coding career.  
+= Inversion Of Control and Dependency Injection = 
 
 ==Dependencies==
 Whenever you have code reference another module or code somewhere else, you have a dependency.  This is all fine and dandy except when you want to change a bit of code but leave the rest of it the same.  
