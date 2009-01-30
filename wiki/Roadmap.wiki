@@ -1,17 +1,12 @@
 
-
-= Jan 23rd = 
-
- * Initial commit
- * able to resolve specified types
- * able to be configured in code
- * constructor injection
-
 = Feb 6th = 
-
  * basic AoP support
- * attempt auto-wiring
+ * Fluent Interface for object registration and parameter passing
 
+= Feb 20th =
+ * Build egg
+ * First download release
+ 
 = Long term = 
 
  * support for extending container with facilities 
