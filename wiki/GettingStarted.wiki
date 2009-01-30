@@ -54,7 +54,7 @@ Class !QueryResults(object):
   def exportascsv(self, results):
     format = !CsvFormat()
     writer = !FileWriter(format)
-    writer.!WriteLines(records, '/home/john/queryresults')
+    writer.!WriteLines(results, '/home/john/queryresults')
 
 </code>
 
@@ -103,7 +103,7 @@ Class !QueryResults(object):
     self.__writer = writer
 
   def exportascsv(self, results):
-    self.__writer.!WriteLines(records, '/home/john/queryresults')
+    self.__writer.!WriteLines(results, '/home/john/queryresults')
 
 </code>
 
