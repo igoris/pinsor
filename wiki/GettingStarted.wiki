@@ -87,4 +87,24 @@ container.!AddComponent(!ServerApplication, Depends=[ !MonthlyReports,!QueryResu
 
 app = container.Resolve(!ServerApplication)
 app.start()
+
+# classes change like so
+class !MonthlyReports(object):
+
+  def __init__(self, writer):
+    self.__writer = writer
+
+  def writereport(self, records):
+    self.__writer.!WriteLines(records, '/mnt/share/fileserver/public/reports/')
+
+Class !QueryResults(object):
+
+  def __init__(self,writer):
+    self.__writer = writer
+
+  def exportascsv(self, results):
+    self.__writer.!WriteLines(records, '/home/john/queryresults')
+
 </code>
+
+So what's going on here?  I configure every class I want to use in the application, and their dependencies. Dependency order is import as it's how Pinsor knows which argument to pass into your constructor.  
