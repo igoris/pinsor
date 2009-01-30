@@ -76,18 +76,6 @@ Now you have to make a new factory class and copy and paste the references all o
 Well if you had Pinsor from the start you'd only have to change one python module that instantiates the container (and that your running code is called !ServerApplication):
 
 <code language="python">
-container = !PinsorContainer()
-container.!AddComponent(!CsvFormat)
-container.!AddComponent(!CrystalReportsFormat)
-container.!AddComponent(!FileWriter,key='write.csv',depends=[ !CsvFormat])
-container.!AddComponent(!FileWriter,key='write.crystal',depends=[ !CrystalReportsFormat])
-container.!AddComponent(!MonthlyReports, Depends[( !FileWriter,'write.csv')])
-container.!AddComponent(!QueryResults, Depends=[( !FileWriter,'write.crystal')])
-container.!AddComponent(!ServerApplication, Depends=[ !MonthlyReports,!QueryResults])
-
-app = container.Resolve(!ServerApplication)
-app.start()
-
 # classes change like so
 class !MonthlyReports(object):
 
@@ -105,6 +93,21 @@ Class !QueryResults(object):
   def exportascsv(self, results):
     self.__writer.!WriteLines(results, '/home/john/queryresults')
 
+# Pinsor code in main module
+
+container = !PinsorContainer()
+container.!AddComponent(!CsvFormat)
+container.!AddComponent(!CrystalReportsFormat)
+container.!AddComponent(!FileWriter,key='write.csv',depends=[ !CsvFormat])
+container.!AddComponent(!FileWriter,key='write.crystal',depends=[ !CrystalReportsFormat])
+container.!AddComponent(!MonthlyReports, Depends=[Config('write.csv')])
+container.!AddComponent(!QueryResults, Depends=[(Config('write.crystal')])
+container.!AddComponent(!ServerApplication, Depends=[ !MonthlyReports,!QueryResults])
+
+app = container.Resolve(!ServerApplication)
+app.start()
+
+
 </code>
 
-So what's going on here?  I configure every class I want to use in the application, and their dependencies. Dependency order is import as it's how Pinsor knows which argument to pass into your constructor.  
+So what's going on here?  I configure every class I want to use in the application, and their dependencies. Dependency order is import as it's how Pinsor knows which argument to pass into your constructor.  For !MonthlyReports and !QueryResults the Dependency takes a Config class and whose argument is a key referenced from earlier, each key is pointing to a different configured instance of !FileWriter.  !MonthyReports will use csv formatting and QueryResults will generate a crystal report.
