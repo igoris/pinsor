@@ -1,1 +1,52 @@
 #Learn how to get going with Pinsor
+
+Pinsor uses parameters in the constructor to pass dependencies on. This is called "Constructor-based injection" in IoC circles it has a  counter part called "Setter-based injection" which is a lower priority for me, but I am accepting patches.
+
+so lets get a very basic example going
+
+<code language="python">
+class Job(object):
+
+  def __init__(self,db,emailer):
+    self.__db = db
+    self.__emailer = emailer
+
+  def write_and_send(self):
+    records = self.__db.getrecords()
+    self.__emailer.mailrecords(records)
+
+class Db(object):
+
+  def getrecords():
+     #does stuff
+
+class Emailer(object);
+
+  def mailrecords(records):
+    #does stuff
+</code>
+
+now lets register these in Pinsor
+
+<code language="python">
+container = !PinsorContainer()
+container.!AddComponent(Job, Depends=(Db, Emailer)
+container.!AddComponent(Db)
+container.!AddComponent(Emailer)
+</code>
+
+normally your code would be *each* time you need to call the job
+
+<code>
+db = Db()
+emailer = Emailer()
+
+job = Job(db, emailer)
+</code>
+
+but with the container every time you need the job you'll just have to call this (but don't get in the habit of working with the container directly, I'll get into this later)
+<code>
+job = container.Resolve(Job)
+</code>
+
+[GettingStarted2 Continue to page 2]
