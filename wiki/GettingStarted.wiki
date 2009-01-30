@@ -1,6 +1,6 @@
 #Learn how to get going with Pinsor
 
-= PinsorContainer class simple example= 
+= !PinsorContainer class simple example= 
 
 Lets say you have classes like so:
 
@@ -36,5 +36,45 @@ class FileWriter(object):
     f = open(outputpath)
     f.writelines(writelist)
     f.close()
+
+</code>
+
+This example is a bit contrived and doesn't show the larger point of using Pinsor, however imagine you have lines spread throughout your code base like this:
+
+<code language="python">
+class MonthlyReportClass(object):
+
+  def writereport(self, records):
+    format = CsvFormat()
+    writer = FileWriter(format)
+    writer.WriteLines(records, '/mnt/share/fileserver/public/reports/')
+
+Class QueryResults(object):
+
+  def exportascsv(self, results):
+    format = CsvFormat()
+    writer = FileWriter(format)
+    writer.WriteLines(records, '/home/john/queryresults')
+
+</code>
+
+Imagine there are dozens like this. Now if you're like alot of folks you end up making a class thats responsible for making these objects for you:
+
+<code language="python">
+class MakeWriter(object):
+   
+  def GetWriter(self)
+    format = CsvFormat()
+    writer = FileWriter(format)
+    return writer
+</code>
+
+But lets say your boss wants you to make make half of your classes use a new CrystalReportsFormat class that another coder created. He tells you not to worry has identical properties and functions to CsvFormat, just plug it in where it matters. 
+
+Now you have to make a new factory class and copy and paste the references all over your code base (potentially having to update your unit tests depending on if you were certain CsvFormat would always be there).
+
+Well if you had Pinsor from the start you'd only have to change one python module that instantiates the container:
+
+<code language="python">
 
 </code>
