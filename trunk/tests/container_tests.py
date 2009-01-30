@@ -45,6 +45,13 @@ class test_container(unittest.TestCase):
 		pinsor.AddComponent(FakeObj, key="comp.fakeobj")
 		fakeobj = pinsor.Resolve(key="comp.fakeobj")
 		assert isinstance(fakeobj, FakeObj)
+	
+	def test_should_retrieve_dependencies_by_key(self):
+		pinsor = PinsorContainer()
+		pinsor.AddComponent(FakeObj, key="comp.fakeobj")
+		pinsor.AddComponent(NeedsFakeObj, depends = [Config("comp.fakeobj")])
+		needsfake = pinsor.Resolve(NeedsFakeObj)
+		assert needsfake.HasFakeObj
 		
 class test_inspector_when_building_class(unittest.TestCase):
 

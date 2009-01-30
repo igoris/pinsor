@@ -1,5 +1,5 @@
 from enums import *
-
+from registration import *
 
 class Component(object):
 	
@@ -58,6 +58,8 @@ class DefaultResolver(object):
 		deps = []
 		component = clstuple[1]
 		for dep in component.Depends:
+			if isinstance(dep, Config):
+				dep = graph[dep.comp_key].ClassType
 			deptuple = self.__inspect.get_class_tuple_from_graph(graph, dep, None)
 			depcomp =  deptuple[1]
 			deps.append(self.walk(graph, deptuple[0], depcomp.ClassType, instances))
