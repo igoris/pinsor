@@ -1,0 +1,40 @@
+#Learn how to get going with Pinsor
+
+= PinsorContainer class simple example= 
+
+Lets say you have classes like so:
+
+<code language="python">
+
+class CsvFormat(object):
+  
+  @property
+  def Extension(self):
+    return ".csv"
+  
+  def getline(self,record):
+    line = []
+    for col in record:
+      line.append(col + ',')
+    rawoutput = ''.join(line)
+    csvoutput = rawoutput.rstrip(',')
+    return csvoutput
+
+class FileWriter(object):
+
+  def __init__(self, format):
+    self.__format = format
+
+  def WriteLines(self,records, directory)
+    endswith = self.__format.Extension
+    writelist = []
+    for record in records:
+      formattedline = self.__format.getline(record)
+      writelist.append(formattedline)
+
+    outputpath = directory + "outputfile" + endswith
+    f = open(outputpath)
+    f.writelines(writelist)
+    f.close()
+
+</code>
