@@ -30,8 +30,14 @@ A writeFile method should operate the same with no code checking for specific ty
 
 Clients should not depend on an interface that they do not use.
 
-short concept here is interfaces should be kept small.
+Short concept here is interfaces should be kept small.
 
 In Python this ends up happening for free with duck typing.However, abstract base classes and if they become popular or not will change how important this principle will be.
 
 = D.ependency Injection Principle = 
+
+Dependencies should come from outside of the class. 
+
+This means instantiating an object inside a method or class is to be avoided till the last responsible moment.  The practical rule is to put all dependencies in constructors, setters or method parameters, not within the body of a method or function.
+
+Pinsor was created to help aid with applying this principle in Python.
