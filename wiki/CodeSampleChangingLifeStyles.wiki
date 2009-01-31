@@ -5,6 +5,7 @@ When needing a class to instantiate a new copy over and over:
 <code language="python">
 
 from time import *
+
 from pinsor.ioc import *
 
 class CurrentTime(object):
