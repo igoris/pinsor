@@ -6,6 +6,22 @@ Each Class and Method should only have one reason for change.  Reason for change
 
 From the class point of view an !EmployeeDatabaseAccess would only have responsibility for storage of data, but it would be harmful to add notification of management for employees having more than 40 hours in a week to this class.  This ends up with two reasons to change a class, making not only testing harder, but meaning more unintended side effects over time.
 
-From a method or function consider things at a lower level.  Maybe set a limit of 2-3 if statements per method(early code of Pinsor violates this principle).
+From a method or function consider things at a lower level.  Maybe set a limit of 2-3 if statements per method(early code of Pinsor violates this principle).  
+
+From a Python perspective this is still absolutely critical, arguably more so as you can so easily cause unintended behavior if not paying attention.
 
 = *O*pen/Closed Principle =
+
+Open for Extension/Closed for modification.  
+
+Short summary rule is depend on base classes and not on specialty ones.  Example:  Your FileWriter should depend on Format not the specialized classes CsvFormat or SpaceDelimitedFormat.
+
+While critically necessary for flexible software in static languages like C# and Java, I'm still undecided about it's value in Python.  Python 2.6 and 3.0 did add support for Abstract Base Classes which would indicate there is some value in explicitly declaring a base class with no behavior, but with the type system in Python this can be accomplished with some discipline (which the next principle addresses well)
+
+= *L*iskov Substitution Principle = 
+
+Let q(x) be a property provable about objects x of type T. Then q(y) should be true for objects y of type S where S is a subtype of T
+
+Shorter version of the above would be once you've specialized a class don't let other methods that use this class depend on the specialized methods and properties.
+
+A writeFile method should operate the same with no code checking for specific type if you give it a CsvFormat or a SpaceDelimitedFormat.  This is absolutely paramount to flexible design in any langauge.  Every time you change behavior of a method based on the type passed to it you are adding a permanent dependency for that method on that type.
