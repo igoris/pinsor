@@ -1,0 +1,51 @@
+= Using Different Component LifeStyles =
+
+When needing a class to instantiate a new copy over and over:
+
+<code language="python">
+
+from time import *
+from pinsor.ioc import *
+
+class CurrentTime(object):
+
+  def __init__(self):
+    self.time =  asctime(localtime())
+  
+  def intializationtime(self):
+    print self.time
+
+
+container = PinsorContainer()
+container.AddComponent(CurrentTime, LifeStyle= LifeStyle.Transient)
+
+time1 = container.Resolve(CurrentTime)
+sleep(10)
+time2 = container.Resolve(CurrentTime)
+
+time1.intializationtime()
+Sat Jan 31 12:45:11 2009
+time2.initalizationtime()
+Sat Jan 31 12:45:21 2009
+
+</code>
+
+the default LifeStyle is Singleton which means that the same instance is called retrieved each time on resolve.  Singleton can still be set to make code more explicit 
+
+<code language="python">
+
+container = PinsorContainer()
+container.AddComponent(CurrentTime, LifeStyle= LifeStyle.Singleton)
+
+time1 = container.Resolve(CurrentTime)
+sleep(10)
+time2 = container.Resolve(CurrentTime)
+
+time1.intializationtime()
+Sat Jan 31 12:45:11 2009
+time2.initalizationtime()
+Sat Jan 31 12:45:11 2009
+
+
+
+</code>
