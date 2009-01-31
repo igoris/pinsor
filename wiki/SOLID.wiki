@@ -1,6 +1,6 @@
 #Acronym of principles coined by Bob Martin and called SOLID by Micheal Feathers
 
-= *S*ingle Responsibility Principle  =
+= S.ingle Responsibility Principle  =
 
 Each Class and Method should only have one reason for change.  Reason for change is dependent on context. 
 
@@ -10,7 +10,7 @@ From a method or function consider things at a lower level.  Maybe set a limit o
 
 From a Python perspective this is still absolutely critical, arguably more so as you can so easily cause unintended behavior if not paying attention.
 
-= *O*pen/Closed Principle =
+= O.pen/Closed Principle =
 
 Open for Extension/Closed for modification.  
 
@@ -18,7 +18,7 @@ Short summary rule is depend on base classes and not on specialty ones.  Example
 
 While critically necessary for flexible software in static languages like C# and Java, I'm still undecided about it's value in Python.  Python 2.6 and 3.0 did add support for Abstract Base Classes which would indicate there is some value in explicitly declaring a base class with no behavior, but with the type system in Python this can be accomplished with some discipline (which the next principle addresses well)
 
-= *L*iskov Substitution Principle = 
+= L.iskov Substitution Principle = 
 
 Let q(x) be a property provable about objects x of type T. Then q(y) should be true for objects y of type S where S is a subtype of T
 
