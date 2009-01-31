@@ -1,1 +1,1 @@
-__all__ = ["ioc", "tests"]
+from ioc import *
