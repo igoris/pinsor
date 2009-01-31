@@ -56,6 +56,11 @@ class Inspector(object):
 			return objs[0]
 		raise Exception(" class type not found in object graph..this is um bad " + str(clstype) + " " + str(key))
 		
+	def getclass(self,graph, key,cls):
+		if cls is None:
+			comp = graph[key]
+			return comp.ClassType
+		return cls		
 	 
 class DefaultResolver(object):
 	
@@ -63,12 +68,10 @@ class DefaultResolver(object):
 		self.__inspect = inspect
 		
 	def walk(self,graph,key,cls,instances):
-		if cls is None:
-			comp = graph[key]
-			cls = comp.ClassType
-		if cls in instances:
+		clsout = self.__inspect.getclass(graph,key,cls)
+		if clsout in instances:
 			return instances[cls]
-		clstuple =self.__inspect.get_class_tuple_from_graph(graph, cls, key)
+		clstuple =self.__inspect.get_class_tuple_from_graph(graph, clsout, key)
 		deps = []
 		component = clstuple[1]
 		for dep in component.Depends:
