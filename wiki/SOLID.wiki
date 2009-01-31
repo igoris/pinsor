@@ -1,4 +1,4 @@
-#Acronym of principles coined by Bob Martin and called SOLID by Micheal Feathers
+#Acronym of principles coined by Bob Martin and called SOLID by Micheal Feathers see [http://www.lostechies.com/blogs/chad_myers/archive/2008/03/07/pablo-s-topic-of-the-month-march-solid-principles.aspx here ] for more detail
 
 = S.ingle Responsibility Principle  =
 
@@ -14,7 +14,7 @@ From a Python perspective this is still absolutely critical, arguably more so as
 
 Open for Extension/Closed for modification.  
 
-Short summary rule is depend on base classes and not on specialty ones.  Example:  Your FileWriter should depend on Format not the specialized classes CsvFormat or SpaceDelimitedFormat.
+Short summary rule is depend on base classes and not on specialty ones.  Example:  Your !FileWriter should depend on Format not the specialized classes !CsvFormat or !SpaceDelimitedFormat.
 
 While critically necessary for flexible software in static languages like C# and Java, I'm still undecided about it's value in Python.  Python 2.6 and 3.0 did add support for Abstract Base Classes which would indicate there is some value in explicitly declaring a base class with no behavior, but with the type system in Python this can be accomplished with some discipline (which the next principle addresses well)
 
@@ -22,6 +22,16 @@ While critically necessary for flexible software in static languages like C# and
 
 Let q(x) be a property provable about objects x of type T. Then q(y) should be true for objects y of type S where S is a subtype of T
 
-Shorter version of the above would be once you've specialized a class don't let other methods that use this class depend on the specialized methods and properties.
+Shorter version of the above would be once a class is specialized methods that depend on it do not depend on the specialized properties or methods.
 
-A writeFile method should operate the same with no code checking for specific type if you give it a CsvFormat or a SpaceDelimitedFormat.  This is absolutely paramount to flexible design in any langauge.  Every time you change behavior of a method based on the type passed to it you are adding a permanent dependency for that method on that type.
+A writeFile method should operate the same with no code checking for specific type if you give it a !CsvFormat or a !SpaceDelimitedFormat.  This is absolutely paramount to flexible design in any language as well as Python.  A method that does type checking has a dependency on that type directly, the more type checking the greater potential for unnecessary dependencies.
+
+= I.nterface Segration Principle =
+
+Clients should not depend on an interface that they do not use.
+
+short concept here is interfaces should be kept small.
+
+In Python this ends up happening for free with duck typing.However, abstract base classes and if they become popular or not will change how important this principle will be.
+
+= D.ependency Injection Principle = 
