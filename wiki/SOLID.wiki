@@ -1,0 +1,11 @@
+#Acronym of principles coined by Bob Martin and called SOLID by Micheal Feathers
+
+= *S*ingle Responsibility Principle  =
+
+Each Class and Method should only have one reason for change.  Reason for change is dependent on context. 
+
+From the class point of view an !EmployeeDatabaseAccess would only have responsibility for storage of data, but it would be harmful to add notification of management for employees having more than 40 hours in a week to this class.  This ends up with two reasons to change a class, making not only testing harder, but meaning more unintended side effects over time.
+
+From a method or function consider things at a lower level.  Maybe set a limit of 2-3 if statements per method(early code of Pinsor violates this principle).
+
+= *O*pen/Closed Principle =
