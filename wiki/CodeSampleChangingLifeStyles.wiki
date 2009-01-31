@@ -30,7 +30,7 @@ Sat Jan 31 12:45:21 2009
 
 </code>
 
-the default LifeStyle is Singleton which means that the same instance is called retrieved each time on resolve.  Singleton can still be set to make code more explicit 
+the default LifeStyle is Singleton which means that the same instance is retrieved each time resolve is called.  Singleton can still be set to make code more explicit 
 
 <code language="python">
 
