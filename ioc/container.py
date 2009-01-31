@@ -20,24 +20,38 @@ class Component(object):
 	def Depends(self):
 		return self.__depends
 		
-
-class Inspector(object):
+class GraphSearcher(object):
+	
+	def match_by_class(self, graph, clstype):
+		objs = []
+		for k,v in graph.iteritems():
+			if v.ClassType == clstype:
+				objs.append((k, v))
+		return objs
+	
+	def match_by_key(self, objs, key):
+		for clstuple in objs:
+			if clstuple[0] == key:
+				return clstuple
 		
+		
+class Inspector(object):
+	
+	def __init__(self, searcher=GraphSearcher()):
+		self.__search = searcher
+	
 	def build_class(self,cls, dep):
 		if len(dep) == 0:
 			return cls()
 		return cls(*dep)
 	
 	def get_class_tuple_from_graph(self,graph, clstype,key):
-		objs  = []
-		for k,v in graph.iteritems():
-			if v.ClassType == clstype:
-				objs.append((k, v))
+		objs  = self.__search.match_by_class(graph, clstype)
 		if len(objs) > 1:
-			for clstuple in objs:
-				if clstuple[0] == key:
-					return clstuple
-			raise Exception ("was able to find matching types but the key does not match for key " + str(key) + " and type " + str(clstype))
+			match =  self.__search.match_by_key(objs, key)
+			if match is None:
+				raise Exception ("was able to find matching types but the key does not match for key " + str(key) + " and type " + str(clstype))
+			return match
 		if len(objs) == 1:
 			return objs[0]
 		raise Exception(" class type not found in object graph..this is um bad " + str(clstype) + " " + str(key))
