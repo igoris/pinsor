@@ -1,26 +1,8 @@
 from enums import *
 from registration import *
-
-class Component(object):
+from components import *
 	
-	def __init__(self, classtype, depends, lifestyle):
-		self.__classtype = classtype
-		self.__depends = depends
-		self.__lifestyle = lifestyle
-		
-	@property
-	def LifeStyle(self):
-		return self.__lifestyle
-		
-	@property
-	def ClassType(self):
-		return self.__classtype
-		
-	@property
-	def Depends(self):
-		return self.__depends
-		
-class GraphSearcher(object):
+class Searcher(object):
 	
 	def match_by_class(self, graph, clstype):
 		objs = []
@@ -34,17 +16,22 @@ class GraphSearcher(object):
 			if clstuple[0] == key:
 				return clstuple
 		
-class DefaultBuilder(object):
+class Builder(object):
 	
 	def build_class(self,cls, dep):
 		if len(dep) == 0:
 			return cls()
 		return cls(*dep)
 	
-	
+	def initalize_cls(self,graph, key,cls):
+		if cls is None:
+			comp = graph[key]
+			return comp.ClassType
+		return cls		
+		
 class Inspector(object):
 	
-	def __init__(self, searcher=GraphSearcher()):
+	def __init__(self, searcher=Searcher()):
 		self.__search = searcher
 	
 	
@@ -54,19 +41,12 @@ class Inspector(object):
 			match =  self.__search.match_by_key(objs, key)
 			if match is None:
 				raise Exception ("was able to find matching types but the key does not match for key " + str(key) + " and type " + str(clstype))
-			return match
+			return ComponentModel(match[0],match[1])
 		if len(objs) == 1:
-			return objs[0]
+			tuple = objs[0]
+			return ComponentModel(tuple[0], tuple[1])
 		raise Exception(" class type not found in object graph..this is um bad " + str(clstype) + " " + str(key))
 		
-		
-	def initalize_cls(self,graph, key,cls):
-		if cls is None:
-			comp = graph[key]
-			return comp.ClassType
-		return cls		
-
-
 class DefaultObjResolver(object):
 	
 	def __init__(self, inspect= Inspector()):
@@ -75,36 +55,35 @@ class DefaultObjResolver(object):
 	def get_depends(self,dep,graph):
 		if isinstance(dep, Config):
 			dep = graph[dep.comp_key].ClassType
-		deptuple = self.__inspect.find_class_by_key_or_class(graph, dep, None)
-		return deptuple		
-
-				 
+		commodel = self.__inspect.find_class_by_key_or_class(graph, dep, None)
+		return commodel		
+						 
 class DefaultLifeStyleResolver(object):
 	
-	def handle_lifestyle(self, component, instances,resolvedobj,cls):
-		if component.LifeStyle == "singleton":
+	def handle_lifestyle(self, lifestyle, instances,resolvedobj,cls):
+		if lifestyle == "singleton":
 			instances[cls] = resolvedobj
 			
 class DefaultResolver(object):
 	
-	def __init__(self, builder = DefaultBuilder(),objresolver=DefaultObjResolver() ,lifestyle = DefaultLifeStyleResolver(),inspect=Inspector() ):
+	def __init__(self, builder = Builder(),objresolver=DefaultObjResolver() ,lifestyle = DefaultLifeStyleResolver(),inspect=Inspector() ):
 		self.__builder = builder
 		self.__objresolver = objresolver
 		self.__lifestyle = lifestyle
 		self.__inspect = inspect
 		
-	def walk(self,graph,key,cls,instances):
-		clsout = self.__inspect.initalize_cls(graph,key,cls)
+	def recursewalk(self,graph,key,cls,instances):
+		clsout = self.__builder.initalize_cls(graph,key,cls)
 		if clsout in instances:
 			return instances[cls]
-		clstuple =self.__inspect.find_class_by_key_or_class(graph, clsout, key)
+		commodel =self.__inspect.find_class_by_key_or_class(graph, clsout, key)
 		deps = []
-		component = clstuple[1]
+		component = commodel.Component
 		for dep in component.Depends:
-			deptuple = self.__objresolver.get_depends(dep, graph)
-			deps.append(self.walk(graph, deptuple[0], deptuple[1].ClassType, instances))
+			depcommodel = self.__objresolver.get_depends(dep, graph)
+			deps.append(self.recursewalk(graph, depcommodel.Key, depcommodel.Component.ClassType, instances))
 		resolvedobj = self.__builder.build_class(component.ClassType, deps)
-		self.__lifestyle.handle_lifestyle(component, instances,resolvedobj,cls)
+		self.__lifestyle.handle_lifestyle(component.LifeStyle(), instances,resolvedobj,clsout)
 		return resolvedobj
 	
 		
@@ -124,7 +103,7 @@ class PinsorContainer(object):
 		self.__objectgraph[key] = Component(clstype, depends, lifestyle)
 			
 	def Resolve(self,clstype=None,key=None):
-		obj = self.__resolver.walk(self.__objectgraph, key, clstype, self.__instances)
+		obj = self.__resolver.recursewalk(self.__objectgraph, key, clstype, self.__instances)
 		return obj
 
 	@property
