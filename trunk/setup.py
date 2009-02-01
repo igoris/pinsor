@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
 	name='pinsor',
-	version='0.1',
+	version='0.1.1',
 	description='IoC container',
 	author='Ryan Svihla',
 	author_email='rssvihla@gmail.com',
@@ -25,6 +25,6 @@ setup(
 	keyrwords = "ioc, dependency injection",
 	license="Apache License 2.0",
 	install_requires=[
-	'setuptools'
+	'setuptools','mox'
 	],
 	)
