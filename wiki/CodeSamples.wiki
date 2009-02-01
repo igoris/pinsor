@@ -6,5 +6,5 @@ I'm building these as I go and will attempt to maintain compatibility with exist
 
 = Index =
 
-  * [CodeSampleMultipleClassesWithDifferentBehaviors Register multiple classes with diff behaviors]   
+  * [CodeSampleMultipleClassesWithDifferentBehaviors Register multiple classes with differing behaviors]   
   * [CodeSampleChangingLifeStyles Using LifeStyles ]
