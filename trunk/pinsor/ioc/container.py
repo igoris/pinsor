@@ -83,7 +83,7 @@ class DefaultResolver(object):
 			depcommodel = self.__objresolver.get_depends(dep, graph)
 			deps.append(self.recursewalk(graph, depcommodel.Key, depcommodel.Component.ClassType, instances))
 		resolvedobj = self.__builder.build_class(component.ClassType, deps)
-		self.__lifestyle.handle_lifestyle(component.LifeStyle(), instances,resolvedobj,clsout)
+		self.__lifestyle.handle_lifestyle(component.LifeStyle, instances,resolvedobj,clsout)
 		return resolvedobj
 	
 		

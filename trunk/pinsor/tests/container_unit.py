@@ -3,7 +3,6 @@ from pinsor.ioc import *
 import unittest
 
 
-		
 class test_builder_when_building_class(unittest.TestCase):
 
 	def setUp(self):
@@ -53,4 +52,22 @@ class test_DefaultLifeStyleResolver_when_using_singleton(unittest.TestCase):
 		self.resolver.handle_lifestyle(LifeStyle.Transient(), self.instances, self.resolvedobj, FakeObj)
 		assert self.resolvedobj not in self.instances.values()
 
-				
+class test_Searcher(unittest.TestCase):
+	
+	def setUp(self):
+		self.searcher = Searcher()
+	
+	def test_should_match_by_class_type_regardless_of_key(self):
+		graph = {}
+		graph["compkey"] = Component( FakeObj ,[] , LifeStyle.Singleton())
+		graph["FakeObj"] = Component(FakeObj, [], LifeStyle.Transient())
+		match = self.searcher.match_by_class(graph, FakeObj)
+		self.assertEqual(2, len(match))
+					
+	def test_should_match_by_string_key(self):
+		objary = []
+		objary.append(("compkey",Component(FakeObj, [], LifeStyle.Singleton())))
+		objary.append(("otherkey", Component(FakeObj, [], LifeStyle.Singleton())))
+		match = self.searcher.match_by_key(objary, "compkey")
+		assert match is not None
+		assert match[0] == "compkey"
