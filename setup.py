@@ -1,16 +1,17 @@
 #!/usr/bin/env python
 
-from setuptools import setup
+from setuptools import setup,find_packages
 
 setup(
 	name='pinsor',
-	version='0.2',
+	version='0.2.1',
 	description='IoC container',
 	author='Ryan Svihla',
 	author_email='rssvihla@gmail.com',
 	url='http://code.google.com/p/pinsor',
 	download_url='http://code.google.com/p/pinsor/downloads/list',
-	packages=['pinsor'],
+	packages=find_packages('pinsor'),
+	package_dir = {'':'pinsor'},
 	
 	long_description="""\
 		pinsor is an IoC container with an emphasis on dependency resolution""",
