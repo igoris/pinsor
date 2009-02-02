@@ -60,9 +60,9 @@ class DefaultObjResolver(object):
 						 
 class DefaultLifeStyleResolver(object):
 	
-	def handle_lifestyle(self, lifestyle, instances,resolvedobj,cls):
+	def handle_lifestyle(self, lifestyle, instances,resolvedobj,cls,key):
 		if lifestyle == "singleton":
-			instances[cls] = resolvedobj
+			instances[key+str(cls)] = resolvedobj
 			
 class DefaultResolver(object):
 	
@@ -73,9 +73,12 @@ class DefaultResolver(object):
 		self.__inspect = inspect
 		
 	def recursewalk(self,graph,key,cls,instances):
+		if key is None:
+			key = cls.__name__
 		clsout = self.__builder.initalize_cls(graph,key,cls)
-		if clsout in instances:
-			return instances[cls]
+		for instkey in instances.keys():
+			if instkey == key+str(cls):
+				return instances[instkey]
 		commodel =self.__inspect.find_class_by_key_or_class(graph, clsout, key)
 		deps = []
 		component = commodel.Component
@@ -83,7 +86,7 @@ class DefaultResolver(object):
 			depcommodel = self.__objresolver.get_depends(dep, graph)
 			deps.append(self.recursewalk(graph, depcommodel.Key, depcommodel.Component.ClassType, instances))
 		resolvedobj = self.__builder.build_class(component.ClassType, deps)
-		self.__lifestyle.handle_lifestyle(component.LifeStyle, instances,resolvedobj,clsout)
+		self.__lifestyle.handle_lifestyle(component.LifeStyle, instances,resolvedobj,clsout,commodel.Key)
 		return resolvedobj
 	
 		
@@ -100,11 +103,18 @@ class PinsorContainer(object):
 			key = clstype.__name__
 		if key in self.__objectgraph:
 			raise KeyError
+		print clstype, depends, lifestyle
 		self.__objectgraph[key] = Component(clstype, depends, lifestyle)
 			
 	def Resolve(self,clstype=None,key=None):
 		obj = self.__resolver.recursewalk(self.__objectgraph, key, clstype, self.__instances)
 		return obj
+	
+	def Register(self, *service):
+		for model in service:
+			componentmodel = model.ComponentModel
+			self.__objectgraph[componentmodel.Key] = componentmodel.Component
+		
 
 	@property
 	def ObjectGraph(self):	

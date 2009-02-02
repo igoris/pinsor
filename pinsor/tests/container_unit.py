@@ -45,11 +45,11 @@ class test_DefaultLifeStyleResolver_when_using_singleton(unittest.TestCase):
 		self.resolver = DefaultLifeStyleResolver()
 		
 	def test_should_store_obj_in_instances_when_lifestyle_is_set_to_singleton(self):
-		self.resolver.handle_lifestyle(LifeStyle.Singleton(), self.instances,self.resolvedobj ,FakeObj)
+		self.resolver.handle_lifestyle(LifeStyle.Singleton(), self.instances,self.resolvedobj ,FakeObj,"fake" )
 		assert self.resolvedobj in self.instances.values()
 	
 	def test_should_not_store_obj_in_instances_if_life_style_is_transient(self):
-		self.resolver.handle_lifestyle(LifeStyle.Transient(), self.instances, self.resolvedobj, FakeObj)
+		self.resolver.handle_lifestyle(LifeStyle.Transient(), self.instances, self.resolvedobj, FakeObj,"fake")
 		assert self.resolvedobj not in self.instances.values()
 
 class test_Searcher(unittest.TestCase):
@@ -71,3 +71,6 @@ class test_Searcher(unittest.TestCase):
 		match = self.searcher.match_by_key(objary, "compkey")
 		assert match is not None
 		assert match[0] == "compkey"
+		
+
+		

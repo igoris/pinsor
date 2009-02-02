@@ -46,10 +46,46 @@ class test_container(unittest.TestCase):
 		fakeobj = pinsor.Resolve(key="comp.fakeobj")
 		assert isinstance(fakeobj, FakeObj)
 	
-	def test_should_retrieve_dependencies_by_key(self):
+	def test_should_retrieve_dependencies_dependencies_by_key(self):
 		pinsor = PinsorContainer()
 		pinsor.AddComponent(FakeObj, key="comp.fakeobj")
 		pinsor.AddComponent(NeedsFakeObj, depends = [Config("comp.fakeobj")])
 		needsfake = pinsor.Resolve(NeedsFakeObj)
 		assert needsfake.HasFakeObj
 		
+class test_container_when_registering_more_than_one_of_the_same_class_with_different_keys(unittest.TestCase):
+	
+	def test_should_return_different_instances(self):
+		pinsor = PinsorContainer()
+		pinsor.AddComponent(FakeObj, key="comp.fake1")
+		pinsor.AddComponent(FakeObj, key="comp.fake2")
+		fake1 = pinsor.Resolve(key="comp.fake1")
+		fake2 = pinsor.Resolve(key="comp.fake2")
+		self.assertNotEqual(id(fake1), id(fake2))
+		
+		
+class test_fluent_registration_of_objects(unittest.TestCase):
+	
+	def setUp(self):
+		self.pinsor = PinsorContainer()
+		
+	def test_should_take_pass_component_into_containter_by_class_name(self):
+		self.pinsor.Register(Service.For(FakeObj))
+		fake = self.pinsor.Resolve(FakeObj)
+		assert isinstance(fake,FakeObj)
+	
+	def test_should_take_pass_component_into_container_and_set_key(self):
+		self.pinsor.Register(Service.For(FakeObj).Named("comp.key"))
+		assert self.pinsor.ObjectGraph["comp.key"].ClassType == FakeObj
+		fake = self.pinsor.Resolve(key='comp.key');
+		assert isinstance(fake, FakeObj)	
+	
+	def test_should_pass_more_than_one_component_into_container(self):
+		self.pinsor.Register(\
+							Service.For(FakeObj).Named("fake1"),\
+		                    Service.For(FakeObj).Named("fake2")\
+		                     )
+		fake1 = self.pinsor.Resolve(key="fake1")
+		fake2 = self.pinsor.Resolve(key="fake2")
+		assert isinstance(fake1, FakeObj)
+		assert isinstance(fake2, FakeObj)
