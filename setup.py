@@ -22,7 +22,7 @@ setup(
 		"Topic :: Software Development :: Libraries :: Python Modules",
 		"Operating System :: OS Independent"
 	],
-	keyrwords = "ioc, dependency injection",
+	keywords = "ioc, dependency injection",
 	license="Apache License 2.0",
 	install_requires=[
 	'setuptools'

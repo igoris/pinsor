@@ -91,7 +91,7 @@ class test_fluent_registration_of_objects(unittest.TestCase):
 		assert isinstance(fake2, FakeObj)
 		
 	def test_should_set_dependencies(self):
-		self.pinsor.Register(\
+		self.pinsor.Register(
 							Service.For(FakeObj),
 							Service.For(NeedsFakeObj).Depends([FakeObj])
 							)
@@ -100,9 +100,18 @@ class test_fluent_registration_of_objects(unittest.TestCase):
 	
 	def test_should_set_lifestyle(self):
 		self.pinsor.Register(\
-		                     Service.For(FakeObj).LifeStyle(LifeStyle.Transient)\
+		                     Service.For(FakeObj).LifeStyle(LifeStyle.Transient())\
 		                     )
 		fake1 = self.pinsor.Resolve(FakeObj)
 		fake2 = self.pinsor.Resolve(FakeObj)
 		self.assertNotEqual(id(fake1), id(fake2))
 		
+	def test_should_set_multiple_options_at_once(self):
+		self.pinsor.Register(
+							Service.For(FakeObj),
+							Service.For(NeedsFakeObj).Depends([FakeObj]).Named("needs").LifeStyle(LifeStyle.Transient())
+							)
+		com = self.pinsor.ObjectGraph["needs"]
+		self.assertEqual(NeedsFakeObj, com.ClassType)
+		self.assertEqual("transient", com.LifeStyle)
+		self.assertEqual(FakeObj, com.Depends[0])
