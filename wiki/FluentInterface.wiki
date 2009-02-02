@@ -1,0 +1,65 @@
+#explanation of how to use fluent interface
+
+= Introduction = 
+
+The fluent interface is a good way to register several Components at once, this is feature equivalent with AddComponent and preference is the only factor.
+
+= Samples =
+
+Basic Registration
+
+<code language = "python">
+
+pinsor = PinsorContainer()
+pinsor.Register(
+	       	Service.For(FakeObj)
+	        )
+
+</code>
+
+Registers Dependencies
+
+<code language = "python">
+
+pinsor = PinsorContainer()
+pinsor.Register(
+	       	Service.For(FakeObj), 
+		Service.For(NeedsFakeObj).Depends([FakeObj]) 
+	        )
+
+</code>
+
+Sets component lifestyle
+
+<code language = "python">
+
+pinsor = PinsorContainer()
+pinsor.Register(
+	       	Service.For(FakeObj).LifeStyle(LifeStyle.Transient)
+	        )
+
+</code>
+
+Sets key so you can register several at once
+
+<code language = "python">
+
+pinsor = PinsorContainer()
+pinsor.Register(
+	       	Service.For(FakeObj).Named("fake1"),
+                Service.For(FakeObj).Named("fake2")
+	        )
+
+</code>
+
+Set up several options at once
+
+<code language = "python">
+
+pinsor = PinsorContainer()
+pinsor.Register(
+	       	Service.For(FakeObj), 
+		Service.For(NeedsFakeObj).Depends([FakeObj]).LifeStyle(LifeStyle.Transient).Named("needs") 
+	        )
+
+</code>
