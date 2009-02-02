@@ -59,7 +59,7 @@ Set up several options at once
 pinsor = PinsorContainer()
 pinsor.Register(
 	       	Service.For(FakeObj), 
-		Service.For(NeedsFakeObj).Depends([FakeObj]).LifeStyle(LifeStyle.Transient).Named("needs") 
+		Service.For(!NeedsFakeObj).Depends([FakeObj]).!LifeStyle(!LifeStyle.Transient()).Named("needs") 
 	        )
 
 </code>
