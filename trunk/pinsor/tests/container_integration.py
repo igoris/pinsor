@@ -89,3 +89,20 @@ class test_fluent_registration_of_objects(unittest.TestCase):
 		fake2 = self.pinsor.Resolve(key="fake2")
 		assert isinstance(fake1, FakeObj)
 		assert isinstance(fake2, FakeObj)
+		
+	def test_should_set_dependencies(self):
+		self.pinsor.Register(\
+							Service.For(FakeObj),
+							Service.For(NeedsFakeObj).Depends([FakeObj])
+							)
+		needsfake = self.pinsor.Resolve(NeedsFakeObj)
+		assert needsfake.HasFakeObj()
+	
+	def test_should_set_lifestyle(self):
+		self.pinsor.Register(\
+		                     Service.For(FakeObj).LifeStyle(LifeStyle.Transient)\
+		                     )
+		fake1 = self.pinsor.Resolve(FakeObj)
+		fake2 = self.pinsor.Resolve(FakeObj)
+		self.assertNotEqual(id(fake1), id(fake2))
+		
