@@ -115,3 +115,15 @@ class test_fluent_registration_of_objects(unittest.TestCase):
 		self.assertEqual(NeedsFakeObj, com.ClassType)
 		self.assertEqual("transient", com.LifeStyle)
 		self.assertEqual(FakeObj, com.Depends[0])
+		
+	def test_should_be_able_to_register_by_key(self):
+		self.pinsor.Register(
+							Component.For(FakeObj).Named("fake1"),
+							Component.For(FakeObj).Named("fake2"),
+							Component.For(NeedsFakeObj).Depends([Config("fake1")]).Named("needs1"),
+							Component.For(NeedsFakeObj).Depends([Config("fake2")]).Named("needs2")
+							)
+		fake2_id = id(self.pinsor.Resolve(key="fake2"))
+		needsfake = self.pinsor.Resolve(key="needs2")
+		fakefromneeds1_id = id(needsfake.FakeInstance())
+		
