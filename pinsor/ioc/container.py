@@ -41,10 +41,10 @@ class Inspector(object):
 			match =  self.__search.match_by_key(objs, key)
 			if match is None:
 				raise Exception ("was able to find matching types but the key does not match for key " + str(key) + " and type " + str(clstype))
-			return ComponentModel(match[0],match[1])
+			return GraphNode(match[0],match[1])
 		if len(objs) == 1:
 			tuple = objs[0]
-			return ComponentModel(tuple[0], tuple[1])
+			return GraphNode(tuple[0], tuple[1])
 		raise Exception(" class type not found in object graph..this is um bad " + str(clstype) + " " + str(key))
 		
 class DefaultObjResolver(object):
@@ -104,7 +104,7 @@ class PinsorContainer(object):
 		if key in self.__objectgraph:
 			raise KeyError
 		print clstype, depends, lifestyle
-		self.__objectgraph[key] = Component(clstype, depends, lifestyle)
+		self.__objectgraph[key] = ComponentModel(clstype, depends, lifestyle)
 			
 	def Resolve(self,clstype=None,key=None):
 		obj = self.__resolver.recursewalk(self.__objectgraph, key, clstype, self.__instances)
@@ -112,7 +112,7 @@ class PinsorContainer(object):
 	
 	def Register(self, *service):
 		for model in service:
-			componentmodel = model.ComponentModel
+			componentmodel = model.GraphNode
 			self.__objectgraph[componentmodel.Key] = componentmodel.Component
 		
 

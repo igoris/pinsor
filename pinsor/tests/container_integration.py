@@ -70,20 +70,20 @@ class test_fluent_registration_of_objects(unittest.TestCase):
 		self.pinsor = PinsorContainer()
 		
 	def test_should_take_pass_component_into_containter_by_class_name(self):
-		self.pinsor.Register(Service.For(FakeObj))
+		self.pinsor.Register(Component.For(FakeObj))
 		fake = self.pinsor.Resolve(FakeObj)
 		assert isinstance(fake,FakeObj)
 	
 	def test_should_take_pass_component_into_container_and_set_key(self):
-		self.pinsor.Register(Service.For(FakeObj).Named("comp.key"))
+		self.pinsor.Register(Component.For(FakeObj).Named("comp.key"))
 		assert self.pinsor.ObjectGraph["comp.key"].ClassType == FakeObj
 		fake = self.pinsor.Resolve(key='comp.key');
 		assert isinstance(fake, FakeObj)	
 	
 	def test_should_pass_more_than_one_component_into_container(self):
-		self.pinsor.Register(\
-							Service.For(FakeObj).Named("fake1"),\
-		                    Service.For(FakeObj).Named("fake2")\
+		self.pinsor.Register(
+							Component.For(FakeObj).Named("fake1"),
+		                    Component.For(FakeObj).Named("fake2")
 		                     )
 		fake1 = self.pinsor.Resolve(key="fake1")
 		fake2 = self.pinsor.Resolve(key="fake2")
@@ -92,15 +92,15 @@ class test_fluent_registration_of_objects(unittest.TestCase):
 		
 	def test_should_set_dependencies(self):
 		self.pinsor.Register(
-							Service.For(FakeObj),
-							Service.For(NeedsFakeObj).Depends([FakeObj])
+							Component.For(FakeObj),
+							Component.For(NeedsFakeObj).Depends([FakeObj])
 							)
 		needsfake = self.pinsor.Resolve(NeedsFakeObj)
 		assert needsfake.HasFakeObj()
 	
 	def test_should_set_lifestyle(self):
-		self.pinsor.Register(\
-		                     Service.For(FakeObj).LifeStyle(LifeStyle.Transient())\
+		self.pinsor.Register(
+		                     Component.For(FakeObj).LifeStyle(LifeStyle.Transient())\
 		                     )
 		fake1 = self.pinsor.Resolve(FakeObj)
 		fake2 = self.pinsor.Resolve(FakeObj)
@@ -108,8 +108,8 @@ class test_fluent_registration_of_objects(unittest.TestCase):
 		
 	def test_should_set_multiple_options_at_once(self):
 		self.pinsor.Register(
-							Service.For(FakeObj),
-							Service.For(NeedsFakeObj).Depends([FakeObj]).Named("needs").LifeStyle(LifeStyle.Transient())
+							Component.For(FakeObj),
+							Component.For(NeedsFakeObj).Depends([FakeObj]).Named("needs").LifeStyle(LifeStyle.Transient())
 							)
 		com = self.pinsor.ObjectGraph["needs"]
 		self.assertEqual(NeedsFakeObj, com.ClassType)

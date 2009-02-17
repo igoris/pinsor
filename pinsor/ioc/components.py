@@ -1,4 +1,4 @@
-class Component(object):
+class ComponentModel(object):
 	
 	def __init__(self, classtype, depends, lifestyle):
 		self.ClassType = classtype
@@ -6,7 +6,7 @@ class Component(object):
 		self.LifeStyle = lifestyle
 	
 
-class ComponentModel(object):
+class GraphNode(object):
 
 	def __init__(self, key, component):
 		self.Key = key
