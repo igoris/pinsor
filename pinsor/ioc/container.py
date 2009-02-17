@@ -45,14 +45,14 @@ class DefaultResolver(object):
 		for dep in compmodel.Depends:
 			if isinstance(dep, Config):
 				configmodel = graph[dep.comp_key]
-				print configmodel
 				resolveddeps.append(self.recursewalk(graph, dep.comp_key, configmodel.ClassType, instances))
 			elif isinstance(dep, Instance):
 				resolveddeps.append(dep.arg)
 			else: 
 				resolveddeps.append(self.recursewalk(graph,None, dep, instances))
 		built =  self.__build_class(clsout, resolveddeps)
-		instances[classkey+str(clsout)] = built
+		if compmodel.LifeStyle is LifeStyle.Singleton():
+			instances[classkey+str(clsout)] = built
 		return built
 
 class PinsorContainer(object):
