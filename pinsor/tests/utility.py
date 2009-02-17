@@ -19,6 +19,9 @@ class NeedsFakeObj(object):
 	def __init__(self, fakeObj):
 		self.__fake_obj = fakeObj
 		
+	def FakeInstance(self):
+		return self.__fake_obj
+			
 	def HasFakeObj(self):
 		return isinstance(self.__fake_obj, FakeObj)
 
