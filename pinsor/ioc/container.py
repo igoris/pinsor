@@ -1,20 +1,7 @@
 from enums import *
 from registration import *
 from components import *
-	
-class Searcher(object):
-	
-	def match_by_class(self, graph, clstype):
-		objs = []
-		for k,v in graph.iteritems():
-			if v.ClassType == clstype:
-				objs.append((k, v))
-		return objs
-	
-	def match_by_key(self, objs, key):
-		for clstuple in objs:
-			if clstuple[0] == key:
-				return clstuple
+from objresolution import *
 		
 class Builder(object):
 	
@@ -28,35 +15,8 @@ class Builder(object):
 			comp = graph[key]
 			return comp.ClassType
 		return cls		
-		
-class Inspector(object):
+
 	
-	def __init__(self, searcher=Searcher()):
-		self.__search = searcher
-	
-	
-	def find_class_by_key_or_class(self,graph, clstype,key):
-		objs  = self.__search.match_by_class(graph, clstype)
-		if len(objs) > 1:
-			match =  self.__search.match_by_key(objs, key)
-			if match is None:
-				raise Exception ("was able to find matching types but the key does not match for key " + str(key) + " and type " + str(clstype))
-			return ComponentModel(match[0],match[1])
-		if len(objs) == 1:
-			tuple = objs[0]
-			return ComponentModel(tuple[0], tuple[1])
-		raise Exception(" class type not found in object graph..this is um bad " + str(clstype) + " " + str(key))
-		
-class DefaultObjResolver(object):
-	
-	def __init__(self, inspect= Inspector()):
-		self.__inspect = inspect
-		
-	def get_depends(self,dep,graph):
-		if isinstance(dep, Config):
-			dep = graph[dep.comp_key].ClassType
-		commodel = self.__inspect.find_class_by_key_or_class(graph, dep, None)
-		return commodel		
 						 
 class DefaultLifeStyleResolver(object):
 	
@@ -66,7 +26,8 @@ class DefaultLifeStyleResolver(object):
 			
 class DefaultResolver(object):
 	
-	def __init__(self, builder = Builder(),objresolver=DefaultObjResolver() ,lifestyle = DefaultLifeStyleResolver(),inspect=Inspector() ):
+	def __init__(self, builder = Builder(),objresolver=DefaultObjResolver() ,
+	lifestyle = DefaultLifeStyleResolver(),inspect=Inspector() ):
 		self.__builder = builder
 		self.__objresolver = objresolver
 		self.__lifestyle = lifestyle
