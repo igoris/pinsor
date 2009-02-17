@@ -1,68 +1,55 @@
 from enums import *
 from registration import *
-from components import *
-from objresolution import *
- 
-		
-class Builder(object):
-	
-	def build_class(self,cls, dep):
-		if len(dep) == 0:
-			return cls()
-		return cls(*dep)
-	
-	def initalize_cls(self,graph, key,cls):
-		if cls is None:
-			comp = graph[key]
-			return comp.ClassType
-		return cls		
- 
-						 
-class DefaultLifeStyleResolver(object):
-	
-	def handle_lifestyle(self, lifestyle, instances,resolvedobj,cls,key):
-		if lifestyle == "singleton":
-			instances[key+str(cls)] = resolvedobj
-			
+from components import * 
+from component_retriever import *
+			 
 class DefaultResolver(object):
+
+	def __init__(self, retrieval = ComponentModelRetrieval()):
+		self.__retrieval = retrieval
+
+	def __get_cls_from_graph(self, graph,key):
+		componentmodel = graph[key]
+		return componentmodel.ClassType
 	
-	def __init__(self, builder = Builder(),objresolver=DefaultObjResolver() ,
-	lifestyle = DefaultLifeStyleResolver(),inspect=Inspector() ):
-		self.__builder = builder
-		self.__objresolver = objresolver
-		self.__lifestyle = lifestyle
-		self.__inspect = inspect
-		
+	def __find_instance(self, instances,key, cls):
+		instkey = key+str(cls)
+		for instance in instances:
+			if instkey in instances:
+				return instances[instkey]
+				
+	def __get_key_from_class_name(self, key, cls):
+		return cls.__name__
+
+	
+	def __build_class(self,cls ,deps):
+		if len(deps) is 0:
+			return cls()
+		else:
+			return cls(*deps)
+				
 	def recursewalk(self,graph,key,cls,instances):
-		key = self.build_key(key, cls)
-		clsout = self.__builder.initalize_cls(graph,key,cls)
-		instance = self.find_instance(cls, instances,key)
+		clsout = cls
+		classkey = key
+		if cls == None:
+			clsout = self.__get_cls_from_graph(graph, classkey)
+		else:
+			classkey = self.__get_key_from_class_name(key, clsout)
+		instance = self.__find_instance(instances, classkey, clsout)
 		if instance is not None:
 			return instance
-		commodel =self.__inspect.find_class_by_key_or_class(graph, clsout, key)
-		component = commodel.Component
-		deps = self.find_deps(component, graph,instances)
-		resolvedobj = self.__builder.build_class(component.ClassType, deps)
-		self.__lifestyle.handle_lifestyle(component.LifeStyle, instances,resolvedobj,clsout,commodel.Key)
-		return resolvedobj
-	
-	def build_key(self, key,cls):
-		if key is None:
-			key = cls.__name__
-		return key
-	
-	def find_deps(self,component, graph,instances):
-		deps =  []
-		for dep in component.Depends:
-			depcommodel = self.__objresolver.get_depends(dep, graph)
-			deps.append(self.recursewalk(graph, depcommodel.Key, depcommodel.Component.ClassType, instances))
-		return deps
-			
-	def find_instance(self,cls,instances, key ):
-		for instkey in instances.keys():
-			if instkey == key+str(cls):
-				return instances[instkey]	
-	
+		compmodel = self.__retrieval.get_component_model(graph, classkey, clsout)
+		resolveddeps = []
+		for dep in compmodel.Depends:
+			if isinstance(dep, Config):
+				configmodel = graph[dep.comp_key]
+				resolveddeps.append(self.recursewalk(graph, dep.comp_key, configmodel.ClassType, instances))
+			if isinstance(dep, Instance):
+				resolveddeps.append(dep)
+			resolveddeps.append(self.recursewalk(graph,None, dep, instances))
+		return self.__build_class(clsout, resolveddeps)
+		
+
 class PinsorContainer(object):
 	
 	def __init__(self, resolver = DefaultResolver()):
@@ -70,8 +57,10 @@ class PinsorContainer(object):
 		self.__instances = {}
 		self.__resolver = resolver
 		
-	def AddComponent(self,clstype, depends = [],
-	 lifestyle = LifeStyle.Singleton(), key= None):
+	def AddComponent(self,clstype, 
+					depends = [],
+					lifestyle = LifeStyle.Singleton(),
+ 					key= None):
 		if key is None:
 			key = clstype.__name__
 		if key in self.__objectgraph:
@@ -80,13 +69,17 @@ class PinsorContainer(object):
 		self.__objectgraph[key] = ComponentModel(clstype, depends, lifestyle)
 			
 	def Resolve(self,clstype=None,key=None):
-		obj = self.__resolver.recursewalk(self.__objectgraph, key, clstype, self.__instances)
+		obj = self.__resolver.recursewalk(self.__objectgraph, key, 
+											clstype,
+		 									self.__instances)
 		return obj
 	
-	def Register(self, *service):
-		for model in service:
-			componentmodel = model.GraphNode
-			self.__objectgraph[componentmodel.Key] = componentmodel.Component
+	def Register(self, *services):
+		for fluentservice in services:
+			if fluentservice.GraphNode.Key in self.__objectgraph:
+				raise KeyError
+			graphnode = fluentservice.GraphNode
+			self.__objectgraph[graphnode.Key] = graphnode.Component
 		
 
 	@property

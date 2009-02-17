@@ -7,12 +7,12 @@ class Config(object):
 	def comp_key(self):
 		return self.__key
 		
-class Param(object):
+class Instance(object):
 	
 	def __init__(self, arg):
 		self.__arg = arg
 		
 	@property
 	def arg(self):
-		return __arg
+		return self.__arg
 		

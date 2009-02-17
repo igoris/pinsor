@@ -4,7 +4,7 @@ from setuptools import setup,find_packages
 
 setup(
 	name='pinsor',
-	version='0.2.1',
+	version='0.5.0',
 	description='IoC container',
 	author='Ryan Svihla',
 	author_email='rssvihla@gmail.com',
