@@ -28,7 +28,7 @@ now lets register these in Pinsor
 
 {{{
 container = PinsorContainer()
-container.AddComponent(Job, Depends=[Db, Emailer])
+container.AddComponent(Job, depends=[Db, Emailer])
 container.AddComponent(Db)
 container.AddComponent(Emailer)
 }}}
