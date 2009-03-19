@@ -4,36 +4,34 @@ Pinsor uses parameters in the constructor to pass dependencies on. This is calle
 
 so lets get a very basic example going
 
-<code language="python">
+{{{
 class Job(object):
+ def __init__(self,db,emailer):
+     self.__db = db
+     self.__emailer = emailer
 
-  def __init__(self,db,emailer):
-    self.__db = db
-    self.__emailer = emailer
-
-  def write_and_send(self):
-    records = self.__db.getrecords()
-    self.__emailer.mailrecords(records)
-
+ def write_and_send(self):
+     records = self.__db.getrecords()
+     self.__emailer.mailrecords(records)
+ 
 class Db(object):
+ def getrecords(self):
+      return "xxx"
+ 
 
-  def getrecords():
-     #does stuff
-
-class Emailer(object);
-
-  def mailrecords(records):
-    #does stuff
-</code>
+class Emailer(object):
+ def mailrecords(self, records):
+      print records 
+}}}
 
 now lets register these in Pinsor
 
-<code language="python">
-container = !PinsorContainer()
-container.!AddComponent(Job, Depends=(Db, Emailer)
-container.!AddComponent(Db)
-container.!AddComponent(Emailer)
-</code>
+{{{
+container = PinsorContainer()
+container.AddComponent(Job, Depends=[Db, Emailer])
+container.AddComponent(Db)
+container.AddComponent(Emailer)
+}}}
 
 normally your code would be *each* time you need to call the job
 
