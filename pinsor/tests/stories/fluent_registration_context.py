@@ -1,8 +1,8 @@
-from pinsor.ioc import *
-from pinsor.tests.utility import *
+from ioc import *
+from tests.utility import *
 import unittest 
 		
-class test_fluent_registration_of_objects(unittest.TestCase):
+class fluent_registration_of_objects_tests(unittest.TestCase):
 	
 	def setUp(self):
 		self.pinsor = PinsorContainer()

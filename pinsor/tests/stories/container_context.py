@@ -1,9 +1,9 @@
-from pinsor.tests.utility import *
-from pinsor.ioc import *
+from tests.utility import *
+from ioc import *
 import unittest
 
 
-class test_container(unittest.TestCase):
+class container_tests(unittest.TestCase):
 
 	def setUp(self):
 		self.pinsor = PinsorContainer()
@@ -53,7 +53,7 @@ class test_container(unittest.TestCase):
 		needsfake = pinsor.Resolve(NeedsFakeObj)
 		assert needsfake.HasFakeObj
 		
-class test_container_when_registering_more_than_one_of_the_same_class_with_different_keys(unittest.TestCase):
+class container_when_registering_more_than_one_of_the_same_class_with_different_keys_tests(unittest.TestCase):
 	
 	def test_should_return_different_instances(self):
 		pinsor = PinsorContainer()

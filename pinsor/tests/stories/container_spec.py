@@ -1,8 +1,8 @@
-from pinsor import *
-from pinsor.tests.utility import *
+#from pinsor import *
+from tests.utility import *
 import unittest
 
-class TestContainer:
+class Container_tests:
 	def setUp(self):
 		self.pinsor = PinsorContainer()
 				
@@ -21,7 +21,7 @@ class TestContainer:
 		fake1 = self.pinsor.Resolve(FakeObj)
 		assert isinstance(fake1, FakeObj)
 		
-class TestContainerWhenResolvingDependenciesStoredByClassName(unittest.TestCase):
+class ContainerWhenResolvingDependenciesStoredByClassName_tests(unittest.TestCase):
 	
 	def setUp(self):
 		self.pinsor = PinsorContainer()
@@ -44,7 +44,7 @@ class TestContainerWhenResolvingDependenciesStoredByClassName(unittest.TestCase)
 			
 		
 
-class TestContainerWhenResolvingDependenciesStoredByKey(unittest.TestCase):
+class ContainerWhenResolvingDependenciesStoredByKey_tests(unittest.TestCase):
 	def setUp(self):
 		self.pinsor = PinsorContainer()
 		self.pinsor.AddComponent(NeedsFakeObj, depends=[Config("fake1")], key="needs1")
@@ -67,7 +67,7 @@ class TestContainerWhenResolvingDependenciesStoredByKey(unittest.TestCase):
 		except KeyError:
 			pass
 		
-class TestContainerWhenResolvingDependenciesStoredByInstance(object):
+class ContainerWhenResolvingDependenciesStoredByInstance_tests(object):
 	def setUp(self):
 		"""docstring for setUp"""
 		self.pinsor = PinsorContainer()
