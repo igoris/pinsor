@@ -4,7 +4,8 @@ class ComponentModel(object):
 		self.ClassType = classtype
 		self.Depends = depends
 		self.LifeStyle = lifestyle
-	
+	def to_string(self):
+ 		print str(self.ClassType), str(self.Depends), str(self.LifeStyle), str(type(self.Depends))
 
 class GraphNode(object):
 

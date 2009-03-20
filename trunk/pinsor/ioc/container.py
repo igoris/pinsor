@@ -2,6 +2,7 @@ from enums import *
 from registration import *
 from components import * 
 from component_retriever import *
+import types
 			 
 class DefaultResolver(object):
 
@@ -23,7 +24,6 @@ class DefaultResolver(object):
 			return cls.__name__
 		return key
 
-	
 	def __build_class(self,cls ,deps):
 		if len(deps) is 0:
 			return cls()
@@ -70,7 +70,8 @@ class PinsorContainer(object):
 			key = clstype.__name__
 		if key in self.__objectgraph:
 			raise KeyError
-		print clstype, depends, lifestyle
+		if type(depends) <> types.ListType:
+			raise TypeError("Depends parameter has to be of type List, not " + str(type(depends)))
 		self.__objectgraph[key] = ComponentModel(clstype, depends, lifestyle)
 			
 	def Resolve(self,clstype=None,key=None):

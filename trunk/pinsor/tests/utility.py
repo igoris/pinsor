@@ -1,4 +1,4 @@
-from pinsor.ioc import *
+from ioc import *
 
 
 class FakeObj(object):

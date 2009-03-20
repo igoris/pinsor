@@ -10,8 +10,7 @@ setup(
 	author_email='rssvihla@gmail.com',
 	url='http://code.google.com/p/pinsor',
 	download_url='http://code.google.com/p/pinsor/downloads/list',
-	packages=find_packages('pinsor'),
-	package_dir = {'':'pinsor'},
+	packages=find_packages(),
 	
 	long_description="""\
 		pinsor is an IoC container with an emphasis on dependency resolution""",

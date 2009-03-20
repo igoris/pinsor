@@ -1,9 +1,9 @@
 from utility import *
-from pinsor.ioc import *
+from ioc import *
 import unittest
 import mox
 
-class test_container(unittest.TestCase):
+class container_tests(unittest.TestCase):
 	
 	def setUp(self):
 		self.mocker = mox.Mox()
