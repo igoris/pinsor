@@ -33,7 +33,6 @@ class ComponentSet(object):
         for com in self.__comlist:
             dupclass = com.classtype is commodel.classtype
             dupdep = com.depends == commodel.depends
-            print dupdep
             duplife = com.lifestyle is commodel.lifestyle
             if dupclass and dupdep and duplife:
                 return True
