@@ -7,4 +7,6 @@ class NotFoundInObjectGraphError(Exception):
     def __str__(self):
         """oiutputs message __str__"""
         return repr(self.message)
-        
+
+class CircularDependencyException(Exception):
+    """called when a circular dependency if found"""

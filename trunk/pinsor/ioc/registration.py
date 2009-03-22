@@ -10,7 +10,7 @@ class Config(object):
         return self.__key
         
 class Instance(object):
-    """stores the instance objec"""
+    """stores the instance object"""
     def __init__(self, arg):
         self.__arg = arg
         
