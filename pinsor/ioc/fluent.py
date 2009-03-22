@@ -1,4 +1,5 @@
-"""Module used for Fluent registration this is the recommned approach"""
+"""Module used for Fluent registration this is
+ the recommned approach to configuring components"""
 from pinsor.ioc.components import GraphNode, ComponentModel
 from pinsor.ioc.enums import LifeStyle
 
@@ -8,21 +9,21 @@ class FluentService(object):
     Sets wraps setup of a graph node instance"""
 
     def __init__(self):
-        self.GraphNode = None
+        self.graphnode = None
                 
     def named(self, key):
         """sets key name on graphnode"""
-        self.GraphNode.Key = key
+        self.graphnode.Key = key
         return self
     
     def depends(self, dependtuple):
         """sets dependencies on graphnode"""
-        self.GraphNode.Component.Depends = dependtuple
+        self.graphnode.component.depends = dependtuple
         return self
     
     def lifestyle(self, lifestyle):
         """sets lifes style on graphnode"""
-        self.GraphNode.Component.LifeStyle = lifestyle
+        self.graphnode.component.lifestyle = lifestyle
         return self
         
 class Component(object):
@@ -35,9 +36,9 @@ class Component(object):
         defaultcomponent = ComponentModel(
                                   classtype=clsobj, 
                                   depends=[], 
-                                  lifestyle = LifeStyle.Singleton()
+                                  lifestyle = LifeStyle.singleton()
                                   )
-        fluent.GraphNode = GraphNode(key=clsobj.__name__, 
+        fluent.graphnode = GraphNode(key=clsobj.__name__, 
                                      component=defaultcomponent
                                      )
         return fluent
