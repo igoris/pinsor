@@ -2,8 +2,9 @@
 serious refactoring needs to be implemented here"""
 from pinsor.ioc.enums import LifeStyle
 from pinsor.ioc.registration import Config, Instance
-from pinsor.ioc.components import ComponentModel
+from pinsor.ioc.components import ComponentModel, ComponentSet
 from pinsor.ioc.component_retriever import ComponentModelRetrieval
+from pinsor.ioc.exceptions import CircularDependencyException
 import types
                         
 class DefaultResolver(object):
@@ -36,7 +37,7 @@ class DefaultResolver(object):
         else:
             return cls(*deps)
                 
-    def recursewalk(self, graph, key, cls, instances):
+    def recursewalk(self, graph, key, cls, instances, visitedset):
         """method responsible for walking the tree, 
         this is doing too much REFACTOR"""
         clsout = cls
@@ -48,9 +49,13 @@ class DefaultResolver(object):
         instance = self.__find_instance(instances, classkey, clsout)
         if instance is not None:
             return instance
+        
         compmodel = self.__retrieval.get_component_model(
                                                         graph, classkey, clsout
                                                         )
+        if visitedset.has_comp(compmodel):
+            raise CircularDependencyException
+        visitedset.add(compmodel)
         resolveddeps = []
         for dep in compmodel.depends:
             if isinstance(dep, Config):
@@ -58,7 +63,8 @@ class DefaultResolver(object):
                 resolveddeps.append(
                                     self.recursewalk(
                                     graph, dep.comp_key, 
-                                    configmodel.classtype, instances
+                                    configmodel.classtype, 
+                                    instances, visitedset
                                     )
                                     )
             elif isinstance(dep, Instance):
@@ -66,7 +72,8 @@ class DefaultResolver(object):
             else: 
                 resolveddeps.append(
                                     self.recursewalk(
-                                    graph, None, dep, instances
+                                    graph, None, dep, instances,
+                                    visitedset
                                     )
                                     )
         built =  self.__build_class(clsout, resolveddeps)
@@ -100,9 +107,10 @@ class PinsorContainer(object):
             
     def resolve(self, clstype=None, key=None):
         """standard client way of accessing Components"""
+        visitedset = ComponentSet()
         obj = self.__resolver.recursewalk(self.__objectgraph, key, 
                                             clstype,
-                                            self.__instances)
+                                            self.__instances, visitedset)
         return obj
     
     def register(self, *services):
