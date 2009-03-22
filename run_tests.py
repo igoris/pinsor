@@ -5,7 +5,7 @@ import sys
 import inspect
 import types
 
-def loadClassesFromFolder(folderPath, packageName, baseclass):
+def loadClassesFromFolder( folderPath, packageName, baseclass ):
     classes = []
     modules = {}
     folder = os.listdir(folderPath)
@@ -30,7 +30,7 @@ def loadClassesFromFolder(folderPath, packageName, baseclass):
     return classes
 
 
-def makeSuite(testsFolder = './tests/stories', testsPackageName = 'tests', testClassSuffix='tests'):
+def makeSuite(testsFolder = 'pinsor/tests/stories', testsPackageName = 'tests', testClassSuffix='tests'):
     """Given the testsFolder parameter, loads all the .py files to search for classes
        which name contains testClassSuffix and inherit from unittest.TestCase.
        It takes these classes to buid the TestSuite and run all the tests.
@@ -39,7 +39,7 @@ def makeSuite(testsFolder = './tests/stories', testsPackageName = 'tests', testC
     testModules = {}
     testPackage = None
     suite = unittest.TestSuite()
-    testClasses = loadClassesFromFolder(testsFolder, "tests.stories", unittest.TestCase)
+    testClasses = loadClassesFromFolder(testsFolder, "pinsor.tests.stories", unittest.TestCase)
     for classHandler  in testClasses:
         for name, value in inspect.getmembers(classHandler, callable):
             if re.match("test", name):
