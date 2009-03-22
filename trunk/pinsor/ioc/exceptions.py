@@ -9,4 +9,14 @@ class NotFoundInObjectGraphError(Exception):
         return repr(self.message)
 
 class CircularDependencyException(Exception):
-    """called when a circular dependency if found"""
+    """called when a circular dependency is found"""
+    pass
+
+class AttemptToAddDuplicateComponentModelToVisitedSet(Exception):
+    """for the componentset to indicate a duplicate has been added"""
+    
+    def __init__(self, message):
+        self.message = message
+    
+    def __str__(self):
+        return repr(self.message)
