@@ -18,11 +18,11 @@ class CurrentTime(object):
 
 
 container = PinsorContainer()
-container.AddComponent(CurrentTime, LifeStyle= LifeStyle.Transient)
+container.addcomponent(CurrentTime, LifeStyle= LifeStyle.transient)
 
-time1 = container.Resolve(CurrentTime)
+time1 = container.resolve(CurrentTime)
 sleep(10)
-time2 = container.Resolve(CurrentTime)
+time2 = container.resolve(CurrentTime)
 
 time1.intializationtime()
 Sat Jan 31 12:45:11 2009
@@ -36,11 +36,11 @@ the default LifeStyle is Singleton which means that the same instance is retriev
 <code language="python">
 
 container = PinsorContainer()
-container.AddComponent(CurrentTime, LifeStyle= LifeStyle.Singleton)
+container.addcomponent(CurrentTime, LifeStyle= LifeStyle.singleton)
 
-time1 = container.Resolve(CurrentTime)
+time1 = container.resolve(CurrentTime)
 sleep(10)
-time2 = container.Resolve(CurrentTime)
+time2 = container.resolve(CurrentTime)
 
 time1.intializationtime()
 Sat Jan 31 12:45:11 2009

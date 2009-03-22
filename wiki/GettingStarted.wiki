@@ -28,9 +28,9 @@ now lets register these in Pinsor
 
 {{{
 container = PinsorContainer()
-container.AddComponent(Job, depends=[Db, Emailer])
-container.AddComponent(Db)
-container.AddComponent(Emailer)
+container.addcomponent(Job, depends=[Db, Emailer])
+container.addcomponent(Db)
+container.addcomponent(Emailer)
 }}}
 
 normally your code would be *each* time you need to call the job
@@ -44,7 +44,7 @@ job = Job(db, emailer)
 
 but with the container every time you need the job you'll just have to call this (but don't get in the habit of working with the container directly, I'll get into this later)
 <code>
-job = container.Resolve(Job)
+job = container.resolve(Job)
 </code>
 
 [GettingStarted2 Continue to page 2]

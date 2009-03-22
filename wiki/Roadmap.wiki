@@ -8,6 +8,7 @@
  
 = Long term = 
 
+ * duck-typing helper that examines code registered by constructor and trys to find matching components.
  * support for extending container with facilities 
  * canned facilities for SQL Alchemy, Logging
  * web framework integration 
