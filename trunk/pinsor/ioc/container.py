@@ -5,7 +5,7 @@ from pinsor.ioc.registration import Config, Instance
 from pinsor.ioc.components import ComponentModel
 from pinsor.ioc.component_retriever import ComponentModelRetrieval
 import types
-             
+                        
 class DefaultResolver(object):
     """Handles Responsibility for finding class types, instances,
      and keys, also has recurser REFACTOR THIS"""
