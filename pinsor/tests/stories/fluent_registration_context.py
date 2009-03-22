@@ -11,12 +11,12 @@ class fluent_registration_of_objects_tests(unittest.TestCase):
     def setUp(self):
         self.pinsor = PinsorContainer()
         
-    def test_should_take_pass_component_into_containter_by_class_name(self):
+    def test_should_pass_component_into_containter_by_class_name(self):
         self.pinsor.register(Component.oftype(FakeObj))
         fake = self.pinsor.resolve(FakeObj)
         assert isinstance(fake,FakeObj)
     
-    def test_should_take_pass_component_into_container_and_set_key(self):
+    def test_should_pass_component_into_container_and_set_key(self):
         self.pinsor.register(Component.oftype(FakeObj).named("comp.key"))
         assert self.pinsor.objectgraph["comp.key"].classtype == FakeObj
         fake = self.pinsor.resolve(key='comp.key');
