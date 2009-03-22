@@ -1,4 +1,4 @@
-from pinsor.tests.utility import FakeObj, NeedsFakeObj, FakeObjWithArgs
+from pinsor.tests.utility import FakeObj, NeedsFakeObj, FakeObjWithArgs, CircularDependencyA, CircularDependencyB
 from pinsor.ioc.container import PinsorContainer
 from pinsor.ioc.enums import LifeStyle
 from pinsor.ioc.registration import Config
@@ -54,6 +54,18 @@ class container_tests(unittest.TestCase):
         pinsor.addcomponent(NeedsFakeObj, depends = [Config("comp.fakeobj")])
         needsfake = pinsor.resolve(NeedsFakeObj)
         assert needsfake.HasFakeObj
+    
+    def test_circular_dependency(self):
+        pinsor = PinsorContainer()
+        pinsor.addcomponent(CircularDependencyA, depends=[CircularDependencyB])
+        pinsor.addcomponent(CircularDependencyB, depends=[CircularDependencyA])
+        try:
+            depA = pinsor.Resolve(CircularDependencyA)
+        except CircularDependencyException:
+            pass
+        else:
+            self.fail("This should raise an exception")
+
         
 class container_when_registering_more_than_one_of_the_same_class_with_different_keys_tests(unittest.TestCase):
     
