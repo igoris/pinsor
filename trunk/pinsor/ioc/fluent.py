@@ -13,7 +13,7 @@ class FluentService(object):
                 
     def named(self, key):
         """sets key name on graphnode"""
-        self.graphnode.Key = key
+        self.graphnode.key = key
         return self
     
     def depends(self, dependtuple):
